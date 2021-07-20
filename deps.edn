@@ -1,0 +1,4 @@
+{:paths ["src" "classes"]
+ :aliases {:javac {:replace-deps {org.suskalo/americano {:mvn/version "1.0.1"}}
+                   :exec-fn americano.cli/javac
+                   :exec-args {:source-paths ["src"]}}}}

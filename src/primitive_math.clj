@@ -1,45 +1,45 @@
 (ns primitive-math
   (:refer-clojure
-    :exclude [* + - / < > <= >= == rem bit-or bit-and bit-xor bit-not bit-shift-left bit-shift-right unsigned-bit-shift-right byte short int float long double inc dec zero? min max true? false?])
+   :exclude [* + - / < > <= >= == rem bit-or bit-and bit-xor bit-not bit-shift-left bit-shift-right unsigned-bit-shift-right byte short int float long double inc dec zero? min max true? false?])
   (:import
-    [primitive_math Primitives]
-    [java.nio ByteBuffer]))
+   (primitive_math Primitives)
+   (java.nio ByteBuffer)))
 
 ;;;
 
 (defmacro ^:private variadic-proxy
   "Creates left-associative variadic forms for any operator."
   ([name fn]
-     `(variadic-proxy ~name ~fn ~(str "A primitive macro version of `" name "`")))
+   `(variadic-proxy ~name ~fn ~(str "A primitive macro version of `" name "`")))
   ([name fn doc]
-     `(variadic-proxy ~name ~fn ~doc identity))
+   `(variadic-proxy ~name ~fn ~doc identity))
   ([name fn doc single-arg-form]
-     (let [x-sym (gensym "x")]
-       `(defmacro ~name
-          ~doc
-          ([~x-sym]
-             ~((eval single-arg-form) x-sym))
-          ([x# y#]
-             (list '~fn x# y#))
-          ([x# y# ~'& rest#]
-             (list* '~name (list '~name x# y#) rest#))))))
+   (let [x-sym (gensym "x")]
+     `(defmacro ~name
+        ~doc
+        ([~x-sym]
+         ~((eval single-arg-form) x-sym))
+        ([x# y#]
+         (list '~fn x# y#))
+        ([x# y# ~'& rest#]
+         (list* '~name (list '~name x# y#) rest#))))))
 
 (defmacro ^:private variadic-predicate-proxy
   "Turns variadic predicates into multiple pair-wise comparisons."
   ([name fn]
-     `(variadic-predicate-proxy ~name ~fn ~(str "A primitive macro version of `" name "`")))
+   `(variadic-predicate-proxy ~name ~fn ~(str "A primitive macro version of `" name "`")))
   ([name fn doc]
-     `(variadic-predicate-proxy ~name ~fn ~doc (constantly true)))
+   `(variadic-predicate-proxy ~name ~fn ~doc (constantly true)))
   ([name fn doc single-arg-form]
-     (let [x-sym (gensym "x")]
-       `(defmacro ~name
-          ~doc
-          ([~x-sym]
-             ~((eval single-arg-form) x-sym))
-          ([x# y#]
-             (list '~fn x# y#))
-          ([x# y# ~'& rest#]
-             (list 'primitive_math.Primitives/and (list '~name x# y#) (list* '~name y# rest#)))))))
+   (let [x-sym (gensym "x")]
+     `(defmacro ~name
+        ~doc
+        ([~x-sym]
+         ~((eval single-arg-form) x-sym))
+        ([x# y#]
+         (list '~fn x# y#))
+        ([x# y# ~'& rest#]
+         (list 'primitive_math.Primitives/and (list '~name x# y#) (list* '~name y# rest#)))))))
 
 (variadic-proxy +             primitive_math.Primitives/add)
 (variadic-proxy -             primitive_math.Primitives/subtract "A primitive macro version of `-`" (fn [x] `(list 'primitive_math.Primitives/negate ~x)))
@@ -156,16 +156,16 @@
     (if-not (using-primitive-operators?)
       (apply f x)
       (let [refer-clojure (->> x
-                            (filter #(and (sequential? %) (= :refer-clojure (first %))))
-                            first)
+                               (filter #(and (sequential? %) (= :refer-clojure (first %))))
+                               first)
             refer-clojure-clauses (update-in
-                                    (apply hash-map (rest refer-clojure))
-                                    [:exclude]
-                                    #(concat % vars-to-exclude))]
+                                   (apply hash-map (rest refer-clojure))
+                                   [:exclude]
+                                   #(concat % vars-to-exclude))]
         (apply f
-          (concat
-            (remove #{refer-clojure} x)
-            [(list* :refer-clojure (apply concat refer-clojure-clauses))]))))))
+               (concat
+                (remove #{refer-clojure} x)
+                [(list* :refer-clojure (apply concat refer-clojure-clauses))]))))))
 
 (defn use-primitive-operators
   "Replaces Clojure's arithmetic and number coercion functions with primitive equivalents.  These are
@@ -208,7 +208,7 @@
 
 (defn float
   "Truncates a number to a float, will not check for overflow."
-    {:inline (fn [x] `(primitive_math.Primitives/toFloat ~x))}
+  {:inline (fn [x] `(primitive_math.Primitives/toFloat ~x))}
   ^double [^double x]
   (unchecked-double (Primitives/toFloat x)))
 
@@ -264,7 +264,7 @@
   "Converts a long to an unsigned long."
   [^long x]
   (BigInteger. 1
-    (-> (ByteBuffer/allocate 8) (.putLong x) .array)))
+               (-> (ByteBuffer/allocate 8) (.putLong x) .array)))
 
 (defn ^long ulong->long
   "Converts an unsigned long to a long."

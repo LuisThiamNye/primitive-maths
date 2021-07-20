@@ -81,11 +81,23 @@ public class Primitives {
         return ~a;
     }
 
+    public static int bitNot(int a) {
+        return ~a;
+    }
+
     public static long shiftLeft(long a, long n) {
         return a << n;
     }
 
+    public static int shiftLeft(int a, long n) {
+        return a << n;
+    }
+
     public static long shiftRight(long a, long n) {
+        return a >> n;
+    }
+
+    public static int shiftRight(int a, long n) {
         return a >> n;
     }
 
@@ -177,6 +189,10 @@ public class Primitives {
         return n % div;
     }
 
+    public static int inc(int n) {
+        return n + 1;
+    }
+
     public static long inc(long n) {
         return n + 1;
     }
@@ -187,6 +203,10 @@ public class Primitives {
 
     public static double inc(double n) {
         return n + 1.0;
+    }
+
+    public static int dec(int n) {
+        return n - 1;
     }
 
     public static long dec(long n) {
@@ -237,6 +257,10 @@ public class Primitives {
         return a - b;
     }
 
+    public static int negate(int n) {
+        return -n;
+    }
+
     public static long negate(long n) {
         return -n;
     }
@@ -273,7 +297,7 @@ public class Primitives {
         return a / b;
     }
 
-    ;;;
+    ////
 
     public static long max(long a, long b) {
         return a < b ? b : a;
@@ -298,5 +322,4 @@ public class Primitives {
     public static double min(double a, double b) {
         return a > b ? b : a;
     }
-
 }
