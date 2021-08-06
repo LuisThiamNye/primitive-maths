@@ -22,7 +22,7 @@
                                      (constantly true)
                                      identity))]
            (when ((:has-fn? ctx) fn-sym)
-             `(defmacro ~(symbol (:ns ctx) (str fn-sym))
+             `(defmacro ~(symbol (str fn-sym))
                 ~doc
                 ([~x-sym]
                  ~((eval single-arg-form) x-sym))
@@ -37,12 +37,11 @@
 
 (defmacro gen-ops [type-name bitwise?]
   (let [ctx {:type-name type-name
-             :ns (str *ns*)
              :has-fn? (if bitwise?
                         (fn [_] true)
                         #(re-matches #"bit.+" (str %)))}]
     `(do
-       (refer-clojure :exclude '~[* + - / < > <= >= == rem bit-or bit-and bit-xor bit-not bit-shift-left bit-shift-right unsigned-bit-shift-right byte short int float long double inc dec zero? min max true? false?])
+       (refer-clojure :exclude '~(quote [* + - / < > <= >= == rem bit-or bit-and bit-xor bit-not bit-shift-left bit-shift-right unsigned-bit-shift-right byte short int float long double inc dec zero? min max true? false?]))
        (-gen-variadics
         ~ctx
         nil
@@ -50,6 +49,7 @@
         [-            subtract "A primitive macro version of `-`" (fn [x#] `(list 'primitive_math.Primitives/negate ~x#))]
         [*            multiply]
         [/            divide]
+        [div          divide]
         [bit-and      bitAnd]
         [bit-or       bitOr]
         [bit-xor      bitXor]
