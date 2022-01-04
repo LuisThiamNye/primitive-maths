@@ -1,6 +1,4 @@
 (ns primitive-math.typed
-  (:require
-   [primitive-math])
   (:import
    (primitive_math.typed DoubleOps LongOps IntOps FloatOps)))
 
@@ -39,7 +37,7 @@
   (let [ctx {:type-name type-name
              :has-fn? (if bitwise?
                         (fn [_] true)
-                        #(re-matches #"bit.+" (str %)))}]
+                        #(not (re-matches #"bit.+" (str %))))}]
     `(do
        (refer-clojure :exclude '~(quote [* + - / < > <= >= == rem bit-or bit-and bit-xor bit-not bit-shift-left bit-shift-right unsigned-bit-shift-right byte short int float long double inc dec zero? min max true? false?]))
        (-gen-variadics
